@@ -1,0 +1,25 @@
+<div *ngFor="let item of files">
+  <h3>{{ item.fileType }}</h3>
+  <table>
+    <col style="width: 30%" />
+    <col style="width: 10%" />
+    <col style="width: 10%" />
+    <col style="width: 20%" />
+    <col style="width: 30%" />
+    <tr>
+      <th>File</th>
+      <th>Type</th>
+      <th>Size</th>
+      <th>Uploaded</th>
+      <th>User</th>
+    </tr>
+    <tr *ngFor="let file of item.fileModels">
+      <td>{{ file.name }}</td>
+      <td>{{ file.fileType }}</td>
+      <td>{{ file.fileSize | number }} Kb</td>
+      <td>{{ file.uploadedDate | date }}</td>
+      <td>{{ file.userName }}</td>
+    </tr>
+  </table>
+  <div></div>
+</div>

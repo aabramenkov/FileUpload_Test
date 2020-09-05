@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FileService } from './_services/file.service';
 
 @Component({
   selector: 'app-root',

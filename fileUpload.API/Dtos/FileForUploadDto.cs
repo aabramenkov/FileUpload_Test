@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Http;
 
-namespace jsite.api.Dtos
+namespace fileUpload.API.Dtos
 {
     public class FileForUploadDto
     {

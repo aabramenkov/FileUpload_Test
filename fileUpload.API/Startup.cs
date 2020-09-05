@@ -27,6 +27,9 @@ namespace fileUpload.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options => options.AddPolicy("AllowAll", p => p.AllowAnyOrigin()
+                                                                    .AllowAnyMethod()
+                                                                     .AllowAnyHeader()));    
             services.AddControllers();
             services.AddDbContext<DataContext>(x =>
             {
@@ -43,14 +46,11 @@ namespace fileUpload.API
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            // app.UseCors("AllowAll");
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseRouting();
-
-            app.UseAuthorization();
             app.UseStaticFiles();
-
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

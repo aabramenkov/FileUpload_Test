@@ -1,0 +1,12 @@
+<div class="main-grid">
+  <div class="file-upload">
+    <app-file-upload
+      [allowedFileTypes]="allowedFileTypes"
+      [allowedFileMaxSize]="allowedFileMaxSize"
+      (fileUploadedEvent)="UploadFile($event)"
+    ></app-file-upload>
+  </div>
+  <div class="file-view">
+    <app-file-view [fileList]="fileList"></app-file-view>
+  </div>
+</div>

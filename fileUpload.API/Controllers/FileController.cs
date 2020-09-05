@@ -1,11 +1,15 @@
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using fileUpload.API.Data;
+using fileUpload.API.Dtos;
 using fileUpload.API.Models;
-using jsite.api.Dtos;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace fileUpload.API.Controllers
 {
@@ -26,6 +30,7 @@ namespace fileUpload.API.Controllers
         [HttpPost("upload")]
         public async Task<IActionResult> UploadFile([FromForm] FileForUploadDto fileForUploadDto)
         {
+            FileModel file = null;
             HttpStatusCode uploadResult = HttpStatusCode.BadRequest;
             var fileForUpload = fileForUploadDto.File;
             if (fileForUpload.Length > 0)
@@ -36,24 +41,32 @@ namespace fileUpload.API.Controllers
                     await fileForUpload.CopyToAsync(fileStream);
                     uploadResult = HttpStatusCode.OK;
                 }
-                FileModel file = new FileModel { Name = fileForUpload.FileName, Path = path };
+                var userName = HttpContext.Connection.Id;
+                var currentDate = DateTime.Now;
+                var fileType = System.IO.Path.GetExtension(fileForUpload.FileName).ToLower();
+                file = new FileModel
+                {
+                    Name = fileForUpload.FileName,
+                    FileType = fileType,
+                    FileSize = fileForUpload.Length/1024,
+                    Path = path,
+                    UserName = userName,
+                    UploadedDate = currentDate
+                };
                 _context.Files.Add(file);
                 _context.SaveChanges();
             }
 
             if (uploadResult == HttpStatusCode.OK)
-                return Ok("File uploaded");
-            return BadRequest("File not uploaded"); 
+                return Ok(file);
+            return BadRequest("File not uploaded");
         }
 
         [HttpGet("files")]
-        public async Task<IActionResult> getFiles(){
-            FileModel file = new FileModel { Name = "Name", Path = "path" };
-                _context.Files.Add(file);
-                await _context.SaveChangesAsync();
-
-
-            return Ok();
+        public async Task<List<FileModel>> getFiles()
+        {
+            var files = await _context.Files.OrderBy(f => f.UploadedDate).ThenBy(f => f.Name).ToListAsync();
+            return files;
         }
     }
 }

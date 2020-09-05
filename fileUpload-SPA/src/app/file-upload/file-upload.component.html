@@ -1,0 +1,5 @@
+   <div class="form-group" >
+      <input type="file" #selectFile (change)="handleFileInput($event.target.files)"/>
+      <div class="warning" *ngIf="!fileValid">! Only files {{allowedFileTypes.toString()}} allowed. Max file size {{allowedFileMaxSize / 1024}} kb</div>
+   </div>
+   <button class="btn btn-primary" [disabled]="!fileValid" (click)="submitUpload()">Submit</button>
